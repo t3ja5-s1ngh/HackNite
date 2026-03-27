@@ -30,4 +30,28 @@ searchForm.addEventListener('submit',(event)=>{
     if(query)window.location.href = `https://www.google.com/search?q=${query}`; 
 });
 //###########################################################################################
+async function poemFetch() {
+    try {
+        const randomLineCount = Math.floor(Math.random() * 10) + 1;
+        console.log(`Searching for a poem with exactly ${randomLineCount} lines...`);
+        
+        const response = await fetch(`https://poetrydb.org/linecount,random/${randomLineCount};1`);
+        const data = await response.json();
 
+        if (data && data.length > 0 && !data.status) {
+            const poem = data[0];
+            document.getElementById("poem").innerHTML = poem.lines.join('<br>');
+            document.getElementById("poemAuthor").innerHTML = `— ${poem.author}`;
+        } 
+        else {
+            console.warn(`No poem found for linecount ${randomLineCount}. Retrying...`);
+            poemFetch(); 
+        }
+
+    } catch (error) {
+        console.error("Connection Error:", error);
+    }
+}
+
+poemFetch();
+//###########################################################################################
