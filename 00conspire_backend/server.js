@@ -23,16 +23,25 @@ app.listen(PORT, ()=> {
 
 ////////////////////////////////////////////////////////////////////
 const {scrape4chan} = require('./services/4chanService');
+const {scrapeNews} = require('./services/NewsService');
+
 app.get('/scrape/:keyword' , async (req,res)=> {
 	const keyword = req.params.keyword;
     try {
-        const itemsFound = await scrape4chan(keyword);
+
+        const [media,news] = await Promise.all([
+		scrape4chan(keyword),
+		scrapeNews(keyword)
+	]);
+
         res.json({ 
             message: "Scraping complete!", 
             keyword: keyword,
-            new_items_saved: itemsFound 
+            confirmed : news,
+	    unconfirmed : media
         });
     } catch (error) {
         res.status(500).json({ error: "Scraping failed" });
     }
 });
+///////////////////////////////////////////////////////////////////
