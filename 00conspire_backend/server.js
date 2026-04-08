@@ -47,14 +47,13 @@ app.get('/scrape/:keyword' , async (req,res)=> {
 ///////////////////////////////////////////////////////////////////
 const News = require('./models/News');
 
-// Get all news, sorted by newest first
 app.get('/api/news', async (req, res) => {
     try {
-        const { status, keyword } = req.query; // Allows filtering like /api/news?status=confirmed
-        let query = {};
+        const { status, keyword } = req.query;
+	    let query = {};
 
         if (status) query.status = status;
-        if (keyword) query.keyword = new RegExp(keyword, 'i'); // Case-insensitive search
+        if (keyword) query.keyword = new RegExp(keyword, 'i'); 
 
         const newsFeed = await News.find(query).sort({ scrapedAt: -1 });
         res.json(newsFeed);
@@ -63,3 +62,11 @@ app.get('/api/news', async (req, res) => {
     }
 });
 //////////////////////////////////////////////////////////////////
+app.delete('/api/admin/clear-database', async (req, res) => {
+    try {
+        await News.deleteMany({}); // Empty object means "match everything"
+        res.json({ message: "Database cleared successfully! 🧹" });
+    } catch (err) {
+        res.status(500).json({ error: "Failed to clear database" });
+    }
+});
