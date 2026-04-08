@@ -45,3 +45,21 @@ app.get('/scrape/:keyword' , async (req,res)=> {
     }
 });
 ///////////////////////////////////////////////////////////////////
+const News = require('./models/News');
+
+// Get all news, sorted by newest first
+app.get('/api/news', async (req, res) => {
+    try {
+        const { status, keyword } = req.query; // Allows filtering like /api/news?status=confirmed
+        let query = {};
+
+        if (status) query.status = status;
+        if (keyword) query.keyword = new RegExp(keyword, 'i'); // Case-insensitive search
+
+        const newsFeed = await News.find(query).sort({ scrapedAt: -1 });
+        res.json(newsFeed);
+    } catch (err) {
+        res.status(500).json({ message: "Error fetching news" });
+    }
+});
+//////////////////////////////////////////////////////////////////
