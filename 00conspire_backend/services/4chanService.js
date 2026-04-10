@@ -17,16 +17,14 @@ if (title.toLowerCase().includes(keyword.toLowerCase()) ||body.toLowerCase().inc
 
 	const newsItem = {
                         title: title,
-                        content: body.replace(/<[^>]*>?/gm, ''), // Strips HTML tags like <br>
+                        content: body.replace(/<[^>]*>?/gm, ''), 
                         url: `https://boards.4channel.org/pol/thread/${thread.no}`,
                         source: '4chan',
                         keyword: keyword,
-                        status: 'unconfirmed' // Default for 4chan
+                        status: 'unconfirmed' 
                     };
 
 	try {
-                        // 4. Save to MongoDB
-                        // .updateOne with upsert: true prevents duplicates based on URL
                         await news.updateOne(
                             { url: newsItem.url }, 
                             { $set: newsItem }, 

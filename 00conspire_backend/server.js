@@ -64,8 +64,8 @@ app.get('/api/news', async (req, res) => {
 //////////////////////////////////////////////////////////////////
 app.delete('/api/admin/clear-database', async (req, res) => {
     try {
-        await News.deleteMany({}); // Empty object means "match everything"
-        res.json({ message: "Database cleared successfully! 🧹" });
+        await News.deleteMany({});
+        res.json({ message: "Database cleared successfully" });
     } catch (err) {
         res.status(500).json({ error: "Failed to clear database" });
     }

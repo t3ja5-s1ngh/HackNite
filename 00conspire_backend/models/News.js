@@ -13,12 +13,12 @@ const NewsSchema = new mongoose.Schema({
     url: {
         type: String,
         required: true,
-        unique: true // This is the MVP's "Anti-Duplicate" shield
+        unique: true
     },
     source: {
         type: String,
         required: true,
-        enum: ['reddit', '4chan', 'twitter', 'other'] // Limits to these options
+        enum: ['reddit', '4chan', 'twitter', 'other']
     },
     keyword: {
         type: String,

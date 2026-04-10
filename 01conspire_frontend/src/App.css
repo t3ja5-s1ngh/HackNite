@@ -5,7 +5,7 @@
 }
 
 .column {
-  flex: 1; /* Makes both columns equal width */
+  flex: 1;
   background: #f4f4f4;
   padding: 15px;
   border-radius: 8px;

@@ -3,11 +3,9 @@ import axios from 'axios';
 import './App.css';
 
 function App() {
-  // 1. STATE: This is where React "remembers" the news data
   const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // 2. FETCH FUNCTION: Talking to your Node server
   const fetchNews = async () => {
     setLoading(true);
     try {
@@ -19,7 +17,6 @@ function App() {
     setLoading(false);
   };
 
-  // 3. EFFECT: Run the fetch automatically when the page first opens
   useEffect(() => {
     fetchNews();
   }, []);
@@ -34,9 +31,9 @@ function App() {
       </header>
 
       <main className="columns-container">
-        {/* LEFT COLUMN: 4chan / Unconfirmed */}
+	  {}
         <section className="column unconfirmed">
-          <h2>⚠️ Unconfirmed (Social Media)</h2>
+          <h2> Unconfirmed (Social Media)</h2>
           {news.filter(item => item.status === 'unconfirmed').map(item => (
             <div key={item._id} className="news-card">
               <h3>{item.title || "Anonymous Post"}</h3>
@@ -46,9 +43,9 @@ function App() {
           ))}
         </section>
 
-        {/* RIGHT COLUMN: NewsAPI / Confirmed */}
+        {}
         <section className="column confirmed">
-          <h2>✅ Confirmed (Trusted Sources)</h2>
+          <h2> Confirmed (Trusted Sources)</h2>
           {news.filter(item => item.status === 'confirmed').map(item => (
             <div key={item._id} className="news-card">
               <h3>{item.title}</h3>
