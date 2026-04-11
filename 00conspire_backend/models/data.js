@@ -1,6 +1,6 @@
 const mongoose =require('mongoose');
 
-const NewsSchema = new mongoose.Schema({
+const DataSchema = new mongoose.Schema({
 	title: {
         type: String,
         required: true,
@@ -27,7 +27,7 @@ const NewsSchema = new mongoose.Schema({
     scrapedAt: {
         type: Date,
         default: Date.now
-    };
+    },
     filter: {
 	    type: String,
 	    required:true,
@@ -36,5 +36,5 @@ const NewsSchema = new mongoose.Schema({
 
 });
 
-module.exports = mongoose.model('News' , NewsSchema);
+module.exports = mongoose.model('data' , DataSchema);
 

@@ -17,7 +17,7 @@ app.get('/',(req, res)=> {
 	res.send("News scrapper Api is running ...");
 });
 
-app.listen(PORT, ()=> {
+app.listen(PORT,'0.0.0.0', ()=> {
 	console.log(`Server started on http://localhost:${PORT}`);
 });
 
@@ -45,7 +45,7 @@ app.get('/scrape/:keyword' , async (req,res)=> {
     }
 });
 ///////////////////////////////////////////////////////////////////
-const News = require('./models/News');
+const db = require('./models/data');
 
 app.get('/api/news', async (req, res) => {
     try {
@@ -55,7 +55,7 @@ app.get('/api/news', async (req, res) => {
         if (status) query.status = status;
         if (keyword) query.keyword = new RegExp(keyword, 'i'); 
 
-        const newsFeed = await News.find(query).sort({ scrapedAt: -1 });
+        const newsFeed = await db.find(query).sort({ scrapedAt: -1 });
         res.json(newsFeed);
     } catch (err) {
         res.status(500).json({ message: "Error fetching news" });
@@ -64,7 +64,7 @@ app.get('/api/news', async (req, res) => {
 //////////////////////////////////////////////////////////////////
 app.delete('/api/admin/clear-database', async (req, res) => {
     try {
-        await News.deleteMany({});
+        await db.deleteMany({});
         res.json({ message: "Database cleared successfully" });
     } catch (err) {
         res.status(500).json({ error: "Failed to clear database" });
