@@ -24,15 +24,16 @@ const NewsSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    status: {
-        type: String,
-        default: 'unconfirmed',
-        enum: ['unconfirmed', 'confirmed', 'rumor']
-    },
     scrapedAt: {
         type: Date,
         default: Date.now
+    };
+    filter: {
+	    type: String,
+	    required:true,
+	    enum: ['media','official']
     }
+
 });
 
 module.exports = mongoose.model('News' , NewsSchema);
