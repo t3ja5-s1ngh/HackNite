@@ -22,18 +22,20 @@ app.listen(PORT,'0.0.0.0', ()=> {
 });
 
 ////////////////////////////////////////////////////////////////////
-const {scrape4chan} = require('./services/4chanService');
-const {scrapeNews} = require('./services/NewsService');
+const {scrape4chan} =require('./services/4chanService');
+const {scrapeNews} =require('./services/NewsService');
 const {scrapeReddit} =require('./services/RedditService');
+const {scrapeMastodon} =require('./services/MastodonService');
 
 app.get('/scrape/:keyword' , async (req,res)=> {
 	const keyword = req.params.keyword;
     try {
 
-        const [chan,news,reddit] = await Promise.all([
+        const [chan,news,reddit,mastodon] = await Promise.all([
 		scrape4chan(keyword),
 		scrapeNews(keyword),
-		scrapeReddit(keyword)
+		scrapeReddit(keyword),
+		scrapeMastodon(keyword)
 	]);
 
         res.json({ 
@@ -41,7 +43,8 @@ app.get('/scrape/:keyword' , async (req,res)=> {
             keyword: keyword,
             news : news,
 	    chan : chan,
-	    reddit : reddit
+	    reddit : reddit,
+	    mastodon : mastodon
         });
     } catch (error) {
 	    console.log(error);
@@ -51,7 +54,7 @@ app.get('/scrape/:keyword' , async (req,res)=> {
 ///////////////////////////////////////////////////////////////////
 const db = require('./models/data');
 
-app.get('/api/news', async (req, res) => {
+app.get('/collect', async (req, res) => {
     try {
         const { status, keyword } = req.query;
 	    let query = {};
