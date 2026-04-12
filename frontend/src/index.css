@@ -4,5 +4,5 @@
 body {
   background-color: #050505;
   color: #d1d1d1;
-  font-family: 'Courier New', Courier, monospace;
+  font-family: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Monaco, Consolas, "Courier New", monospace;
 }
