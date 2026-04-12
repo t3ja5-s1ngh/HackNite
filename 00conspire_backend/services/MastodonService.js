@@ -15,7 +15,8 @@ const scrapeMastodon = async (keyword) => {
         content: post.content.replace(/<[^>]*>/g, ''),
         url: post.url,
         source: 'Mastodon',
-        keyword: keyword
+        keyword: keyword,
+	filter: "media"
       };
 
       try {

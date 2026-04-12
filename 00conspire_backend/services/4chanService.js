@@ -15,13 +15,14 @@ const scrape4chan = async (keyword) => {
 
 				if (title.toLowerCase().includes(keyword.toLowerCase()) || body.toLowerCase().includes(keyword.toLowerCase())) {
 
-					const newsItem = {
-						title: title,
-						content: body.replace(/<[^>]*>?/gm, ''),
-						url: `https://boards.4channel.org/pol/thread/${thread.no}`,
-						source: '4chan',
-						keyword: keyword
-					};
+	const newsItem = {
+                        title: title,
+                        content: body.replace(/<[^>]*>?/gm, ''), 
+                        url: `https://boards.4channel.org/pol/thread/${thread.no}`,
+                        source: '4chan',
+                        keyword: keyword,
+			filter: "media"
+                    };
 
 					try {
 						await db.updateOne(

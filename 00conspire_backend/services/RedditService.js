@@ -19,7 +19,8 @@ const scrapeReddit = async (keyword) => {
         content: post.data.selftext,
         url: post.data.url_overridden_by_dest || post.data.url,
         source: 'Reddit',
-        keyword: keyword
+        keyword: keyword,
+	filter: "media"
       };
 
       try {

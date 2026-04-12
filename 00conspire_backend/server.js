@@ -124,3 +124,34 @@ app.delete('/api/admin/clear-database', async (req, res) => {
     }
 });
 /////////////////////////////////////////////////////////////////
+const Parser = require('rss-parser');
+const parser = new Parser();
+
+app.get('/trending', verifyToken, async (req, res) => {
+  try {
+    const feed = await parser.parseURL('https://news.google.com/rss?hl=en-US&gl=US&ceid=US:en');
+
+    const trendingItems = feed.items.slice(0, 10).map(item => {
+      const cleanTitle = item.title.split(' - ')[0];
+      
+      const imageSearchTerm = cleanTitle.split(' ').slice(0, 2).join(' ');
+
+      return {
+        title: cleanTitle,
+        link: item.link,
+        pubDate: item.piubDate,
+        imageUrl: `https://image.pollinations.ai/prompt/${encodeURIComponent(imageSearchTerm)}?width=1080&height=720&nologo=true`
+      };
+    });
+
+    res.json({
+      user: req.user.id,
+      description: "Top 10 Trending Topics in Global Media",
+      topics: trendingItems
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to fetch live trending news" });
+  }
+});
