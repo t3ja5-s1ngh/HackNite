@@ -36,8 +36,13 @@ const scrapeNews = async (keyword) => {
 			} catch (dbError) { }
 		}
 		return count;
+<<<<<<< HEAD
+	}catch(error){
+		console.error("News scraping failed", error);
+=======
 	} catch (error) {
 		console.error("news scrape service error", error);
+>>>>>>> parth
 		throw error;
 	}
 };
