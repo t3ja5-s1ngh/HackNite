@@ -1,6 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const User = require('./models/user');
+const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 const app = express();
@@ -21,21 +23,9 @@ app.listen(PORT,'0.0.0.0', ()=> {
 	console.log(`Server started on http://localhost:${PORT}`);
 });
 
-/////////////////////////////////////////////////////////////////////
-
-const User = require('./models/user');
-const jwt = require('jsonwebtoken');
-const rateLimit = require('express-rate-limit');
-const verifyToken = require('./services/AuthService');
-
-const scraperLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, 
-  max: 5, 
-  keyGenerator: (req) => req.user.id,
-  handler: (req, res) => {
-    res.status(429).json({ message: "Limit reached for this user." });
-  }
-});
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+const {scraperLimiter} = require('./services/LimitService');
+const {verifyToken} = require('./services/AuthService');
 
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
@@ -48,7 +38,8 @@ app.post('/login', async (req, res) => {
   const token = jwt.sign({ id: user._id }, "demo_secret_key_123", { expiresIn: '1h' });
   res.json({ token: `Bearer ${token}` });
 });
-////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 app.post('/register', async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -65,8 +56,7 @@ app.post('/register', async (req, res) => {
   }
 });
 
-
-////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 const {scrape4chan} =require('./services/4chanService');
 const {scrapeNews} =require('./services/NewsService');
 const {scrapeReddit} =require('./services/RedditService');
@@ -97,7 +87,8 @@ app.get('/scrape/:keyword' ,verifyToken, scraperLimiter, async (req,res)=> {
         res.status(500).json({ error: "Scraping failed" });
     }
 });
-///////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 const db = require('./models/data');
 
 app.get('/collect', async (req, res) => {
@@ -114,18 +105,8 @@ app.get('/collect', async (req, res) => {
         res.status(500).json({ message: "Error fetching news" });
     }
 });
-//////////////////////////////////////////////////////////////////
-app.delete('/api/admin/clear-database', async (req, res) => {
-    try {
-        await db.deleteMany({});
-        res.json({ message: "Database cleared successfully" });
-    } catch (err) {
-        res.status(500).json({ error: "Failed to clear database" });
-    }
-});
-/////////////////////////////////////////////////////////////////
-const UNSPLASH_KEY = '5ABu_RcaBcX3XKAuWpC8GiQ8BvnLXcVM_h1W9Fuv1XE';
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 app.get('/trending', verifyToken, async (req, res) => {
   try {
     const trendingData = await db.aggregate([
@@ -138,7 +119,7 @@ app.get('/trending', verifyToken, async (req, res) => {
       const keyword = item._id || "news";
       
       const response = await fetch(
-        `https://api.unsplash.com/search/photos?query=${encodeURIComponent(keyword)}&per_page=1&client_id=${UNSPLASH_KEY}`
+        `https://api.unsplash.com/search/photos?query=${encodeURIComponent(keyword)}&per_page=1&client_id=${process.env.UNSPLASH_KEY}`
       );
       const data = await response.json();
       
@@ -161,3 +142,14 @@ app.get('/trending', verifyToken, async (req, res) => {
     res.status(500).json({ error: "Failed to fetch trending topics or images" });
   }
 });
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+app.delete('/admin/clear', async (req, res) => {
+    try {
+        await db.deleteMany({});
+        res.json({ message: "Database cleared successfully" });
+    } catch (err) {
+        res.status(500).json({ error: "Failed to clear database" });
+    }
+});
+

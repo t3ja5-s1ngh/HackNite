@@ -37,7 +37,7 @@ const scrapeNews = async (keyword) => {
 		}
 		return count;
 	}catch(error){
-		console.error("news scrape service error", error);
+		console.error("News scraping failed", error);
 		throw error;
 	}
 };

@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const SECRET = "demo_secret_key_123";
 
-module.exports = (req, res, next) => {
+const verifyToken = (req, res, next) => {
   const token = req.header('Authorization');
   if (!token) return res.status(401).json({ error: 'Access Denied' });
 
@@ -14,3 +14,5 @@ module.exports = (req, res, next) => {
     res.status(400).json({ error: 'Invalid Token' });
   }
 };
+
+module.exports = {verifyToken};
