@@ -124,34 +124,40 @@ app.delete('/api/admin/clear-database', async (req, res) => {
     }
 });
 /////////////////////////////////////////////////////////////////
-const Parser = require('rss-parser');
-const parser = new Parser();
+const UNSPLASH_KEY = '5ABu_RcaBcX3XKAuWpC8GiQ8BvnLXcVM_h1W9Fuv1XE';
 
 app.get('/trending', verifyToken, async (req, res) => {
   try {
-    const feed = await parser.parseURL('https://news.google.com/rss?hl=en-US&gl=US&ceid=US:en');
+    const trendingData = await db.aggregate([
+      { $group: { _id: "$keyword", count: { $sum: 1 }, latestTitle: { $first: "$title" } } },
+      { $sort: { count: -1 } },
+      { $limit: 10 }
+    ]);
 
-    const trendingItems = feed.items.slice(0, 10).map(item => {
-      const cleanTitle = item.title.split(' - ')[0];
+    const topics = await Promise.all(trendingData.map(async (item) => {
+      const keyword = item._id || "news";
       
-      const imageSearchTerm = cleanTitle.split(' ').slice(0, 2).join(' ');
+      const response = await fetch(
+        `https://api.unsplash.com/search/photos?query=${encodeURIComponent(keyword)}&per_page=1&client_id=${UNSPLASH_KEY}`
+      );
+      const data = await response.json();
+      
+      const imageUrl = data.results[0]?.urls?.regular || "https://via.placeholder.com/1080x720?text=No+Image+Found";
 
       return {
-        title: cleanTitle,
-        link: item.link,
-        pubDate: item.piubDate,
-        imageUrl: `https://image.pollinations.ai/prompt/${encodeURIComponent(imageSearchTerm)}?width=1080&height=720&nologo=true`
+        title: keyword.toUpperCase(),
+        count: item.count,
+        imageUrl: imageUrl
       };
-    });
+    }));
 
     res.json({
       user: req.user.id,
-      description: "Top 10 Trending Topics in Global Media",
-      topics: trendingItems
+      topics: topics
     });
 
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Failed to fetch live trending news" });
+    console.error("Trending API Error:", error);
+    res.status(500).json({ error: "Failed to fetch trending topics or images" });
   }
 });
