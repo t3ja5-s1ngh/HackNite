@@ -17,16 +17,16 @@ const scrapeNews = async (keyword) => {
 
 		for (let article of articles) {
 			const newsItem = {
-                	title: article.title,
-                	content: article.description || article.content,
-                	url: article.url,
-                	source: article.source.name,
-                	keyword: keyword,
-			filter: "official",
-                        imageUrl: article.urlToImage
-            		};
-			
-			try{
+				title: article.title,
+				content: article.description || article.content,
+				url: article.url,
+				source: article.source.name,
+				keyword: keyword,
+				filter: "official",
+				imageUrl: article.urlToImage
+			};
+
+			try {
 				await db.updateOne(
 					{ url: newsItem.url },
 					{ $set: newsItem },

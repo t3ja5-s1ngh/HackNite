@@ -17,7 +17,7 @@ export default function Home() {
     const fetchTrending = async () => {
       try {
         const token = localStorage.getItem('token');
-        const res = await axios.get('http://10.91.245.152:5000/trending', {
+        const res = await axios.get('http://10.12.89.152:5000/trending', {
           headers: { Authorization: token }
         });
         if (res.data && res.data.topics) {

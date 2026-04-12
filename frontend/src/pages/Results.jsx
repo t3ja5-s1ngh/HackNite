@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Shield, Skull, Terminal, AlertTriangle, Fingerprint, Eye, Activity, Link, FileText } from 'lucide-react';
 import { motion } from 'framer-motion';
 import cityBg from '../assets/city.jpeg';
+import triangleLoading from '../assets/triangle_loading.jpeg';
 
 export default function Results() {
   const { keyword } = useParams();
@@ -33,11 +34,11 @@ export default function Results() {
       setLoading(true);
       try {
         const token = localStorage.getItem('token');
-        await axios.get(`http://10.91.245.152:5000/scrape/${keyword}`, {
+        await axios.get(`http://10.12.89.152:5000/scrape/${keyword}`, {
           headers: { Authorization: token }
         });
 
-        const res = await axios.get(`http://10.91.245.152:5000/collect?keyword=${keyword}`);
+        const res = await axios.get(`http://10.12.89.152:5000/collect?keyword=${keyword}`);
         
         setData({
           confirmed: res.data.filter(i => i.filter === "official"),
@@ -78,7 +79,14 @@ export default function Results() {
         <div className="absolute inset-0 pointer-events-none z-10 opacity-10 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_4px,3px_100%]"></div>
         
         <div className="relative z-20 flex flex-col items-center">
-          <Terminal size={64} className="mb-8 animate-pulse text-sinRed opacity-80" />
+          <motion.div
+            animate={{ scale: [1, 1.25, 1], opacity: [0.7, 1, 0.7] }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+            className="w-32 h-32 mb-8 rounded-xl overflow-hidden border-2 border-sinRed/30 shadow-[0_0_40px_rgba(220,38,38,0.2)]"
+          >
+            <img src={triangleLoading} alt="Loading Sequence" className="w-full h-full object-cover mix-blend-screen" />
+          </motion.div>
+          
           <h2 className="text-2xl md:text-5xl font-black tracking-widest text-center h-12">
             {loadingText}
           </h2>
@@ -147,14 +155,7 @@ export default function Results() {
                     </div>
 
                     <div className="relative z-10 flex-col flex h-full">
-                      {/* Image Thumbnail */}
-                      <div className="w-full h-32 mb-5 overflow-hidden border border-zinc-800 shadow-inner grayscale group-hover:grayscale-0 transition-all duration-500 relative bg-black">
-                        <img src={item.imageUrl || `https://image.pollinations.ai/prompt/${encodeURIComponent(keyword + " conspiracy anomaly")}?width=400&height=200&nologo=true`} alt="Intelligence" className="w-full h-full object-cover opacity-50 group-hover:opacity-100 transition-opacity duration-500 mix-blend-luminosity group-hover:mix-blend-normal" />
-                        <div className="absolute bottom-2 right-2 flex gap-1">
-                          <div className="w-1.5 h-1.5 bg-sinRed animate-ping"></div>
-                          <div className="w-1.5 h-1.5 bg-sinRed"></div>
-                        </div>
-                      </div>
+                      {/* Removed Thumbnail */}
 
                       <div className="flex justify-between items-start mb-4">
                         <span className="flex items-center gap-2 text-[10px] sm:text-xs text-sinRed font-bold uppercase tracking-tighter bg-sinRed/10 px-2 py-1 border border-sinRed/20">
@@ -210,11 +211,7 @@ export default function Results() {
                     </div>
                     
                     <div className="relative z-10 flex-col flex h-full">
-                      {/* Image Thumbnail */}
-                      <div className="w-full h-40 mb-5 overflow-hidden border border-white/10 bg-black/50 relative">
-                        <img src={item.imageUrl || `https://image.pollinations.ai/prompt/${encodeURIComponent(keyword + " classified document")}?width=400&height=200&nologo=true`} alt="Document" className="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700 mix-blend-screen" />
-                        <div className="absolute top-2 left-2 bg-blue-500/80 text-white text-[8px] font-black uppercase px-2 py-1 tracking-widest backdrop-blur-sm">FILE AUTHENTICATED</div>
-                      </div>
+                      {/* Removed Thumbnail */}
 
                       <div className="flex justify-between items-start mb-4 border-b border-white/10 pb-3">
                         <span className="flex items-center gap-2 text-xs text-blue-400 font-bold uppercase tracking-widest">

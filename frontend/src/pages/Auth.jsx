@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { ShieldAlert, Crosshair, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import eagleImg from '../assets/eagle.jpeg';
 
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
@@ -25,7 +26,7 @@ export default function Auth() {
     
     try {
       const endpoint = isLogin ? '/login' : '/register';
-      const url = `http://10.91.245.152:5000${endpoint}`;
+      const url = `http://10.12.89.152:5000${endpoint}`;
       
       const res = await axios.post(url, { username, password });
       
@@ -57,11 +58,13 @@ export default function Auth() {
           <motion.div 
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            className="flex justify-center mb-4 text-sinRed"
+            className="flex justify-center mb-6"
           >
-            <ShieldAlert size={48} />
+            <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-zinc-800 shadow-[0_0_30px_rgba(220,38,38,0.3)]">
+              <img src={eagleImg} alt="Eagle Protocol" className="w-full h-full object-cover" />
+            </div>
           </motion.div>
-          <h1 className="text-4xl font-black tracking-tighter uppercase text-white mb-2">
+          <h1 className="text-6xl md:text-7xl font-black tracking-[0.2em] uppercase italic text-transparent bg-clip-text bg-gradient-to-b from-white via-zinc-400 to-zinc-900 drop-shadow-[0_5px_10px_rgba(0,0,0,1)] mb-2" style={{ marginRight: '-0.2em', paddingRight: '0.2em' }}>
             CONSPIRE
           </h1>
           <p className="text-zinc-500 text-sm tracking-[0.2em] uppercase">
