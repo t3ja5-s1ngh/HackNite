@@ -22,7 +22,8 @@ const scrapeNews = async (keyword) => {
                 	content: article.description || article.content,
                 	url: article.url,
                 	source: article.source.name,
-                	keyword: keyword 
+                	keyword: keyword,
+			filter: "official"
             		};
 			
 			try{

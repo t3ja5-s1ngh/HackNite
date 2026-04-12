@@ -20,7 +20,8 @@ if (title.toLowerCase().includes(keyword.toLowerCase()) ||body.toLowerCase().inc
                         content: body.replace(/<[^>]*>?/gm, ''), 
                         url: `https://boards.4channel.org/pol/thread/${thread.no}`,
                         source: '4chan',
-                        keyword: keyword 
+                        keyword: keyword,
+			filter: "media"
                     };
 
 	try {
