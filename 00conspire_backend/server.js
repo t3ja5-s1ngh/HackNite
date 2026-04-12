@@ -21,13 +21,41 @@ app.listen(PORT,'0.0.0.0', ()=> {
 	console.log(`Server started on http://localhost:${PORT}`);
 });
 
+/////////////////////////////////////////////////////////////////////
+
+const User = require('./models/user');
+const jwt = require('jsonwebtoken');
+const rateLimit = require('express-rate-limit');
+const verifyToken = require('./services/AuthService');
+
+const scraperLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, 
+  max: 5, 
+  keyGenerator: (req) => req.user.id,
+  handler: (req, res) => {
+    res.status(429).json({ message: "Limit reached for this user." });
+  }
+});
+
+app.post('/login', async (req, res) => {
+  const { username, password } = req.body;
+  const user = await User.findOne({ username });
+
+  if (!user || user.password !== password) {
+    return res.status(400).json({ error: 'Invalid credentials' });
+  }
+
+  const token = jwt.sign({ id: user._id }, "demo_secret_key_123", { expiresIn: '1h' });
+  res.json({ token: `Bearer ${token}` });
+});
+
 ////////////////////////////////////////////////////////////////////
 const {scrape4chan} =require('./services/4chanService');
 const {scrapeNews} =require('./services/NewsService');
 const {scrapeReddit} =require('./services/RedditService');
 const {scrapeMastodon} =require('./services/MastodonService');
 
-app.get('/scrape/:keyword' , async (req,res)=> {
+app.get('/scrape/:keyword' ,verifyToken, scraperLimiter, async (req,res)=> {
 	const keyword = req.params.keyword;
     try {
 
@@ -39,6 +67,7 @@ app.get('/scrape/:keyword' , async (req,res)=> {
 	]);
 
         res.json({ 
+	    user : req.user.id,
             message: "Scraping complete!", 
             keyword: keyword,
             news : news,
@@ -77,3 +106,4 @@ app.delete('/api/admin/clear-database', async (req, res) => {
         res.status(500).json({ error: "Failed to clear database" });
     }
 });
+/////////////////////////////////////////////////////////////////
