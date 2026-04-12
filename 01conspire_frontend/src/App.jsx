@@ -1,11 +1,15 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Auth from './pages/Auth';
-import Home from './pages/Home';
-import Results from './pages/Results';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import Auth from "./pages/Auth";
+import Home from "./pages/Home";
+import Results from "./pages/Results";
 
-// ProtectedRoute component to check token
 function ProtectedRoute({ children }) {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
   if (!token) {
     return <Navigate to="/" replace />;
   }
@@ -17,16 +21,22 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Auth />} />
-        <Route path="/home" element={
-          <ProtectedRoute>
-            <Home />
-          </ProtectedRoute>
-        } />
-        <Route path="/search/:keyword" element={
-          <ProtectedRoute>
-            <Results />
-          </ProtectedRoute>
-        } />
+        <Route
+          path="/home"
+          element={
+            <ProtectedRoute>
+              <Home />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/search/:keyword"
+          element={
+            <ProtectedRoute>
+              <Results />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </Router>
   );
