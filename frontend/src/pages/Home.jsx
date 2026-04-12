@@ -1,15 +1,33 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Search, Eye } from 'lucide-react';
+import { Search, Eye, LogOut } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import heroBg from '../assets/hero.png';
 
 export default function Home() {
   const [search, setSearch] = useState('');
   const [showTop10, setShowTop10] = useState(false);
   const navigate = useNavigate();
 
-  // Mock Top 10 data for testing
-  const trending = ["CORRUPTION", "RED_ROOM", "HEIST", "MAFIA", "VAULT", "SYNDICATE", "NOIR", "GHOST", "ECHO", "SHADOW"];
+  const [trending, setTrending] = useState([]);
+
+  useEffect(() => {
+    const fetchTrending = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const res = await axios.get('http://10.91.245.152:5000/trending', {
+          headers: { Authorization: token }
+        });
+        if (res.data && res.data.topics) {
+          setTrending(res.data.topics);
+        }
+      } catch (err) {
+        console.error("Failed to fetch trending:", err);
+      }
+    };
+    fetchTrending();
+  }, []);
 
   const handleSearch = (e) => {
     if (e.key === 'Enter' && search) {
@@ -18,9 +36,14 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-noir selection:bg-sinRed selection:text-white">
+    <div 
+      className="flex flex-col items-center justify-center min-h-screen p-4 bg-noir selection:bg-sinRed selection:text-white relative bg-cover bg-center bg-no-repeat"
+      style={{ backgroundImage: `url(${heroBg})` }}
+    >
+      <div className="absolute inset-0 bg-black/60 z-0"></div>
+
       {/* Search Section */}
-      <div className="flex flex-col items-center w-full max-w-2xl gap-8 transition-all duration-500">
+      <div className="flex flex-col items-center w-full max-w-2xl gap-8 transition-all duration-500 z-10 relative">
         <div className="relative w-full group">
           <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-500 group-focus-within:text-sinRed transition-colors" size={24} />
           <input 
@@ -33,12 +56,24 @@ export default function Home() {
           />
         </div>
 
-        <button 
-          onClick={() => setShowTop10(!showTop10)}
-          className="flex items-center gap-3 text-zinc-500 hover:text-white hover:tracking-widest transition-all duration-300 font-bold uppercase text-sm tracking-widest"
-        >
-          <Eye size={18} /> BIRD'S EYE VIEW
-        </button>
+        <div className="flex gap-8">
+          <button 
+            onClick={() => setShowTop10(!showTop10)}
+            className="flex items-center gap-3 text-zinc-500 hover:text-white hover:tracking-widest transition-all duration-300 font-bold uppercase text-sm tracking-widest"
+          >
+            <Eye size={18} /> BIRD'S EYE VIEW
+          </button>
+          
+          <button 
+            onClick={() => {
+              localStorage.removeItem('token');
+              navigate('/');
+            }}
+            className="flex items-center gap-3 text-sinRed/80 hover:text-sinRed hover:tracking-widest transition-all duration-300 font-bold uppercase text-sm tracking-widest"
+          >
+            <LogOut size={18} /> ABORT SESSION
+          </button>
+        </div>
       </div>
 
       {/* Netflix-Style Top 10 Panel */}
@@ -56,21 +91,28 @@ export default function Home() {
             </div>
             
             <div className="flex gap-8 overflow-x-auto px-12 pb-8 no-scrollbar snap-x">
-              {trending.map((word, i) => (
+              {trending.map((topic, i) => (
                 <motion.div 
-                  key={word}
-                  whileHover={{ scale: 1.1, y: -10 }}
-                  className="relative min-w-[280px] h-[400px] bg-zinc-900 border border-zinc-800 flex items-center justify-center cursor-pointer group snap-center"
-                  onClick={() => navigate(`/search/${word}`)}
+                  key={topic.link || i}
+                  whileHover={{ scale: 1.05, y: -10 }}
+                  className="relative min-w-[320px] h-[400px] bg-zinc-900 border border-zinc-800 flex flex-col justify-end cursor-pointer group snap-center overflow-hidden"
+                  onClick={() => navigate(`/search/${topic.title}`)}
                 >
+                  {topic.imageUrl && (
+                    <img 
+                      src={topic.imageUrl} 
+                      alt={topic.title}
+                      className="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-80 transition-opacity duration-500"
+                    />
+                  )}
                   {/* The Big Background Number */}
-                  <span className="absolute -left-10 bottom-[-20px] text-[12rem] font-black leading-none select-none transition-colors duration-500 text-transparent group-hover:text-sinRed/10" style={{ WebkitTextStroke: '2px #3f3f46' }}>
+                  <span className="absolute -left-5 top-[-40px] text-[10rem] font-black leading-none select-none transition-colors duration-500 text-transparent group-hover:text-sinRed/30 z-10" style={{ WebkitTextStroke: '2px #3f3f46' }}>
                     {i + 1}
                   </span>
                   
-                  <div className="z-10 text-center">
-                    <p className="text-2xl font-black tracking-[0.2em] group-hover:text-white transition-colors uppercase">{word}</p>
-                    <div className="h-1 w-0 group-hover:w-full bg-sinRed transition-all duration-500 mt-2 mx-auto" />
+                  <div className="z-20 text-left p-6 w-full bg-gradient-to-t from-black via-black/80 to-transparent">
+                    <p className="text-lg font-bold tracking-tight text-zinc-300 group-hover:text-white transition-colors line-clamp-3">{topic.title}</p>
+                    <div className="h-1 w-0 group-hover:w-full bg-sinRed transition-all duration-500 mt-4" />
                   </div>
                 </motion.div>
               ))}

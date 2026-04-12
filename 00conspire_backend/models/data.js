@@ -1,7 +1,7 @@
-const mongoose =require('mongoose');
+const mongoose = require('mongoose');
 
 const DataSchema = new mongoose.Schema({
-	title: {
+    title: {
         type: String,
         required: true,
         trim: true
@@ -29,12 +29,12 @@ const DataSchema = new mongoose.Schema({
         default: Date.now
     },
     filter: {
-	    type: String,
-	    required:true,
-	    enum: ['media','official']
+        type: String,
+        required: true,
+        enum: ['media', 'official']
     }
 
 });
 
-module.exports = mongoose.model('data' , DataSchema);
+module.exports = mongoose.model('data', DataSchema);
 

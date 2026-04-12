@@ -3,7 +3,7 @@ const db = require('../models/data');
 
 const scrapeMastodon = async (keyword) => {
   const url = `https://mastodon.social/api/v1/timelines/tag/${keyword}?limit=10`;
-  
+
   try {
     const response = await axios.get(url);
     const posts = response.data;
@@ -25,7 +25,7 @@ const scrapeMastodon = async (keyword) => {
           { upsert: true }
         );
         count++;
-      } catch (dbError) {}
+      } catch (dbError) { }
     }
     return count;
   } catch (error) {

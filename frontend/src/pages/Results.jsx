@@ -13,15 +13,18 @@ export default function Results() {
     const fetchData = async () => {
       setLoading(true);
       try {
-        // Step 1: Trigger the scrapers on your backend
-        await axios.get(`http://10.91.245.152:5000/scrape/${keyword}`);
+        // Step 1: Trigger the scrapers on your backend (requires JWT token)
+        const token = localStorage.getItem('token');
+        await axios.get(`http://10.91.245.152:5000/scrape/${keyword}`, {
+          headers: { Authorization: token }
+        });
 
         // Step 2: Fetch the compiled results from MongoDB
-        const res = await axios.get(`http://10.91.245.152:5000/api/news?keyword=${keyword}`);
+        const res = await axios.get(`http://10.91.245.152:5000/collect?keyword=${keyword}`);
         
         setData({
-          confirmed: res.data.filter(i => i.status === 'confirmed'),
-          unconfirmed: res.data.filter(i => i.status === 'unconfirmed')
+          confirmed: res.data.filter(i => i.filter === "official"),
+          unconfirmed: res.data.filter(i => i.filter === "media")
         });
       } catch (err) {
         console.error("Transmission Interrupted:", err);
@@ -41,7 +44,7 @@ export default function Results() {
   return (
     <div className="min-h-screen bg-noir p-8 font-mono">
       <button 
-        onClick={() => navigate('/')}
+        onClick={() => navigate('/home')}
         className="flex items-center gap-2 text-zinc-500 hover:text-white mb-12 transition-all"
       >
         <ArrowLeft size={18} /> RETURN TO STREETS

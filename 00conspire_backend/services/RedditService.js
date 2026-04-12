@@ -4,13 +4,13 @@ const db = require('../models/data');
 const scrapeReddit = async (keyword) => {
   const encodedKeyword = encodeURIComponent(keyword);
   const url = `https://www.reddit.com/r/worldnews/search.json?q=${encodedKeyword}&restrict_sr=on&sort=relevance&t=day&limit=8`;
-  
+
   try {
     const response = await axios.get(url, {
       headers: { 'User-Agent': 'Conspire' }
     });
 
-    const posts = response.data.data.children; 
+    const posts = response.data.data.children;
     let count = 0;
 
     for (let post of posts) {
@@ -29,8 +29,8 @@ const scrapeReddit = async (keyword) => {
           { upsert: true }
         );
         count++;
-      } catch (dbError) {}
-      }
+      } catch (dbError) { }
+    }
 
     return count;
   } catch (error) {
