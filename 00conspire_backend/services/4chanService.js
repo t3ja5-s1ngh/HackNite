@@ -11,9 +11,14 @@ const scrape4chan = async (keyword) => {
 			for (let thread of page.threads) {
 
 				const title = thread.sub || "No Title";
+<<<<<<< HEAD
+                		const body = thread.com || "";
+if (title.toLowerCase().includes(keyword.toLowerCase()) ||body.toLowerCase().includes(keyword.toLowerCase())){
+=======
 				const body = thread.com || "";
 
 				if (title.toLowerCase().includes(keyword.toLowerCase()) || body.toLowerCase().includes(keyword.toLowerCase())) {
+>>>>>>> parth
 
 	const newsItem = {
                         title: title,
@@ -36,6 +41,16 @@ const scrape4chan = async (keyword) => {
 			}
 		}
 		return count;
+<<<<<<< HEAD
+	}catch(error){
+		console.error("4chan scrape failed:", error);
+        	throw error;
+		}
+};
+
+module.exports = {scrape4chan};
+
+=======
 	} catch (error) {
 		console.error("4chan Scrape Error:", error);
 		throw error;
@@ -43,3 +58,4 @@ const scrape4chan = async (keyword) => {
 };
 
 module.exports = { scrape4chan };
+>>>>>>> parth
