@@ -14,13 +14,17 @@ const scrapeReddit = async (keyword) => {
     let count = 0;
 
     for (let post of posts) {
+      let thumb = post.data.thumbnail;
+      if (thumb === 'self' || thumb === 'default') thumb = "";
+
       const newsItem = {
         title: post.data.title || "Reddit",
         content: post.data.selftext,
         url: post.data.url_overridden_by_dest || post.data.url,
         source: 'Reddit',
         keyword: keyword,
-	filter: "media"
+        filter: "media",
+        imageUrl: thumb
       };
 
       try {

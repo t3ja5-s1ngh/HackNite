@@ -31,6 +31,10 @@ const DataSchema = new mongoose.Schema({
         type: String,
         required: true,
         enum: ['media', 'official']
+    },
+    imageUrl: {
+        type: String,
+        required: false
     }
 
 });

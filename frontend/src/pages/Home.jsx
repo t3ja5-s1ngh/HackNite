@@ -43,14 +43,36 @@ export default function Home() {
     >
       <div className="absolute inset-0 bg-black/60 z-0"></div>
 
+      {/* Top action bar */}
+      <div className="absolute top-6 right-6 z-20">
+        <button 
+          onClick={() => {
+            localStorage.removeItem('token');
+            navigate('/');
+          }}
+          className="flex items-center gap-2 text-sinRed/80 hover:text-sinRed hover:tracking-widest transition-all duration-300 font-bold uppercase text-sm tracking-widest px-4 py-2 bg-black/40 border border-zinc-800/50 hover:border-sinRed/50 rounded-full backdrop-blur-sm"
+        >
+          <LogOut size={16} /> ABORT SESSION
+        </button>
+      </div>
+
       {/* Search Section */}
-      <div className="flex flex-col items-center w-full max-w-2xl gap-8 transition-all duration-500 z-10 relative">
-        <div className="relative w-full group">
-          <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-500 group-focus-within:text-sinRed transition-colors" size={24} />
+      <div className="flex flex-col items-center w-full max-w-3xl gap-8 transition-all duration-500 z-10 relative">
+        
+        <div className="flex flex-col items-center mb-2">
+          <h1 className="text-7xl md:text-9xl font-black tracking-[0.2em] md:tracking-[0.4em] uppercase italic text-transparent bg-clip-text bg-gradient-to-b from-white via-zinc-400 to-zinc-900 drop-shadow-[0_10px_20px_rgba(0,0,0,1)] hover:scale-105 transition-transform duration-700 cursor-default" style={{ marginRight: '-0.2em', paddingRight: '0.2em' }}>
+            CONSPIRE
+          </h1>
+          <p className="text-sinRed text-[10px] md:text-xs tracking-[0.5em] md:tracking-[0.8em] uppercase font-bold mt-4 opacity-80" style={{ marginRight: '-0.8em' }}>Intelligence Aggregator</p>
+        </div>
+
+        <div className="relative w-full group mt-4">
+          <div className="absolute inset-0 bg-sinRed/20 blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-1000 rounded-full"></div>
+          <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-zinc-500 group-focus-within:text-sinRed transition-colors z-10" size={24} />
           <input 
             type="text"
             placeholder="Search for sin..."
-            className="w-full bg-zinc-900/50 border-2 border-zinc-800 py-5 pl-14 pr-6 rounded-full text-xl outline-none focus:border-sinRed/50 focus:bg-zinc-900 transition-all font-mono"
+            className="relative w-full bg-black/50 backdrop-blur-md shadow-[0_0_40px_rgba(0,0,0,0.8)] border-2 border-zinc-800/80 py-6 pl-16 pr-8 rounded-full text-xl md:text-2xl text-white outline-none focus:border-sinRed/80 focus:bg-black/80 transition-all duration-300 font-mono z-10 placeholder:text-zinc-600"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             onKeyDown={handleSearch}
@@ -64,16 +86,6 @@ export default function Home() {
             title="Bird's Eye View"
           >
             <img src={eyeBtn} alt="Bird's Eye View" className="w-full h-full object-cover" />
-          </button>
-          
-          <button 
-            onClick={() => {
-              localStorage.removeItem('token');
-              navigate('/');
-            }}
-            className="flex items-center gap-3 text-sinRed/80 hover:text-sinRed hover:tracking-widest transition-all duration-300 font-bold uppercase text-sm tracking-widest"
-          >
-            <LogOut size={18} /> ABORT SESSION
           </button>
         </div>
       </div>
