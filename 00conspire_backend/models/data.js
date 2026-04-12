@@ -17,8 +17,7 @@ const DataSchema = new mongoose.Schema({
     },
     source: {
         type: String,
-        required: true,
-        enum: ['reddit', '4chan', 'twitter', 'other']
+        required: true
     },
     keyword: {
         type: String,

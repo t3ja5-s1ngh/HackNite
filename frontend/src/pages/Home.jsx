@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Search, Eye, LogOut } from 'lucide-react';
+import { Search, LogOut, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import heroBg from '../assets/hero.png';
+import cityBg from '../assets/city.jpeg';
+import eyeBtn from '../assets/eye.jpeg';
 
 export default function Home() {
   const [search, setSearch] = useState('');
@@ -38,7 +39,7 @@ export default function Home() {
   return (
     <div 
       className="flex flex-col items-center justify-center min-h-screen p-4 bg-noir selection:bg-sinRed selection:text-white relative bg-cover bg-center bg-no-repeat"
-      style={{ backgroundImage: `url(${heroBg})` }}
+      style={{ backgroundImage: `url(${cityBg})` }}
     >
       <div className="absolute inset-0 bg-black/60 z-0"></div>
 
@@ -59,9 +60,10 @@ export default function Home() {
         <div className="flex gap-8">
           <button 
             onClick={() => setShowTop10(!showTop10)}
-            className="flex items-center gap-3 text-zinc-500 hover:text-white hover:tracking-widest transition-all duration-300 font-bold uppercase text-sm tracking-widest"
+            className="rounded-full overflow-hidden hover:scale-110 transition-transform duration-300 border-2 border-zinc-800 hover:border-sinRed w-16 h-16 shadow-lg shadow-black/50"
+            title="Bird's Eye View"
           >
-            <Eye size={18} /> BIRD'S EYE VIEW
+            <img src={eyeBtn} alt="Bird's Eye View" className="w-full h-full object-cover" />
           </button>
           
           <button 
@@ -84,10 +86,16 @@ export default function Home() {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: "100%", opacity: 0 }}
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed bottom-0 left-0 w-full bg-gradient-to-t from-black via-noir to-transparent pt-20 pb-12"
+            className="fixed bottom-0 left-0 w-full bg-gradient-to-t from-black via-noir to-transparent pt-20 pb-12 z-50"
           >
-            <div className="px-12 mb-6">
+            <div className="px-12 mb-6 flex justify-between items-end">
               <h3 className="text-zinc-500 font-bold tracking-tighter text-2xl">TOP 10 TRENDING</h3>
+              <button 
+                onClick={() => setShowTop10(false)}
+                className="flex items-center gap-2 text-zinc-500 hover:text-white transition-colors uppercase font-bold text-sm tracking-widest px-4 py-2 border border-zinc-800 hover:border-white rounded-full bg-black/50"
+              >
+                <X size={16} /> RETURN TO TERMINAL
+              </button>
             </div>
             
             <div className="flex gap-8 overflow-x-auto px-12 pb-8 no-scrollbar snap-x">
