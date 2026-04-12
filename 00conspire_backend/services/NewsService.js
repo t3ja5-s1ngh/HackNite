@@ -1,5 +1,5 @@
 const axios = require('axios');
-const news = require('../models/News');
+const db = require('../models/data');
 
 const scrapeNews = async (keyword) => {
 	try{
@@ -22,12 +22,11 @@ const scrapeNews = async (keyword) => {
                 	content: article.description || article.content,
                 	url: article.url,
                 	source: article.source.name,
-                	keyword: keyword,
-                	status: 'confirmed'
+                	keyword: keyword 
             		};
 			
 			try{
-				await news.updateOne(
+				await db.updateOne(
 					{url: newsItem.url },
 					{$set: newsItem },
 					{upsert: true }

@@ -1,5 +1,5 @@
 const axios = require('axios');
-const news = require('../models/News');
+const db = require('../models/data');
 
 const scrape4chan = async (keyword) => {
 	try{
@@ -20,12 +20,11 @@ if (title.toLowerCase().includes(keyword.toLowerCase()) ||body.toLowerCase().inc
                         content: body.replace(/<[^>]*>?/gm, ''), 
                         url: `https://boards.4channel.org/pol/thread/${thread.no}`,
                         source: '4chan',
-                        keyword: keyword,
-                        status: 'unconfirmed' 
+                        keyword: keyword 
                     };
 
 	try {
-                        await news.updateOne(
+                        await db.updateOne(
                             { url: newsItem.url }, 
                             { $set: newsItem }, 
                             { upsert: true }

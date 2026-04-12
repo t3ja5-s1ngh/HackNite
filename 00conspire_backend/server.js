@@ -17,37 +17,90 @@ app.get('/',(req, res)=> {
 	res.send("News scrapper Api is running ...");
 });
 
-app.listen(PORT, ()=> {
+app.listen(PORT,'0.0.0.0', ()=> {
 	console.log(`Server started on http://localhost:${PORT}`);
 });
 
-////////////////////////////////////////////////////////////////////
-const {scrape4chan} = require('./services/4chanService');
-const {scrapeNews} = require('./services/NewsService');
+/////////////////////////////////////////////////////////////////////
 
-app.get('/scrape/:keyword' , async (req,res)=> {
+const User = require('./models/user');
+const jwt = require('jsonwebtoken');
+const rateLimit = require('express-rate-limit');
+const verifyToken = require('./services/AuthService');
+
+const scraperLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, 
+  max: 5, 
+  keyGenerator: (req) => req.user.id,
+  handler: (req, res) => {
+    res.status(429).json({ message: "Limit reached for this user." });
+  }
+});
+
+app.post('/login', async (req, res) => {
+  const { username, password } = req.body;
+  const user = await User.findOne({ username });
+
+  if (!user || user.password !== password) {
+    return res.status(400).json({ error: 'Invalid credentials' });
+  }
+
+  const token = jwt.sign({ id: user._id }, "demo_secret_key_123", { expiresIn: '1h' });
+  res.json({ token: `Bearer ${token}` });
+});
+////////////////////////////////////////////////////////////////////
+app.post('/register', async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    
+    const existingUser = await User.findOne({ username });
+    if (existingUser) return res.status(400).json({ error: "Username taken" });
+
+    const newUser = new User({ username, password });
+    await newUser.save();
+
+    res.status(201).json({ message: "User created successfully!" });
+  } catch (err) {
+    res.status(500).json({ error: "Registration failed" });
+  }
+});
+
+
+////////////////////////////////////////////////////////////////////
+const {scrape4chan} =require('./services/4chanService');
+const {scrapeNews} =require('./services/NewsService');
+const {scrapeReddit} =require('./services/RedditService');
+const {scrapeMastodon} =require('./services/MastodonService');
+
+app.get('/scrape/:keyword' ,verifyToken, scraperLimiter, async (req,res)=> {
 	const keyword = req.params.keyword;
     try {
 
-        const [media,news] = await Promise.all([
+        const [chan,news,reddit,mastodon] = await Promise.all([
 		scrape4chan(keyword),
-		scrapeNews(keyword)
+		scrapeNews(keyword),
+		scrapeReddit(keyword),
+		scrapeMastodon(keyword)
 	]);
 
         res.json({ 
+	    user : req.user.id,
             message: "Scraping complete!", 
             keyword: keyword,
-            confirmed : news,
-	    unconfirmed : media
+            news : news,
+	    chan : chan,
+	    reddit : reddit,
+	    mastodon : mastodon
         });
     } catch (error) {
+	    console.log(error);
         res.status(500).json({ error: "Scraping failed" });
     }
 });
 ///////////////////////////////////////////////////////////////////
-const News = require('./models/News');
+const db = require('./models/data');
 
-app.get('/api/news', async (req, res) => {
+app.get('/collect', async (req, res) => {
     try {
         const { status, keyword } = req.query;
 	    let query = {};
@@ -55,7 +108,7 @@ app.get('/api/news', async (req, res) => {
         if (status) query.status = status;
         if (keyword) query.keyword = new RegExp(keyword, 'i'); 
 
-        const newsFeed = await News.find(query).sort({ scrapedAt: -1 });
+        const newsFeed = await db.find(query).sort({ scrapedAt: -1 });
         res.json(newsFeed);
     } catch (err) {
         res.status(500).json({ message: "Error fetching news" });
@@ -64,9 +117,10 @@ app.get('/api/news', async (req, res) => {
 //////////////////////////////////////////////////////////////////
 app.delete('/api/admin/clear-database', async (req, res) => {
     try {
-        await News.deleteMany({});
+        await db.deleteMany({});
         res.json({ message: "Database cleared successfully" });
     } catch (err) {
         res.status(500).json({ error: "Failed to clear database" });
     }
 });
+/////////////////////////////////////////////////////////////////
