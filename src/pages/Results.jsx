@@ -217,10 +217,7 @@ export default function Results() {
                     <div className="relative z-10 flex-col flex h-full">
                       {/* Removed Thumbnail */}
 
-                      <div className="flex justify-between items-start mb-4">
-                        <span className="flex items-center gap-2 text-[10px] sm:text-xs text-sinRed font-bold uppercase tracking-tighter bg-sinRed/10 px-2 py-1 border border-sinRed/20">
-                          <AlertTriangle size={12} /> THREAT: HIGH
-                        </span>
+                      <div className="flex justify-end items-start mb-4">
                         <span className="text-[10px] text-zinc-500 uppercase font-black flex items-center gap-1">
                           <Activity size={10} /> {item.source}
                         </span>
@@ -295,10 +292,7 @@ export default function Results() {
                     <div className="relative z-10 flex-col flex h-full">
                       {/* Removed Thumbnail */}
 
-                      <div className="flex justify-between items-start mb-4 border-b border-zinc-800 pb-3">
-                        <span className="flex items-center gap-2 text-xs text-zinc-300 font-bold uppercase tracking-widest">
-                          <Eye size={14} /> CLEARANCE: PUBLIC
-                        </span>
+                      <div className="flex justify-end items-start mb-4 border-b border-zinc-800 pb-3">
                         <span className="text-[10px] text-zinc-500 uppercase font-black bg-zinc-900 px-2 py-1">
                           {item.source}
                         </span>
