@@ -2,6 +2,8 @@
 
 Conspire is a full-stack research and scraping platform that collects keyword-driven intelligence from news, Reddit, Mastodon, and 4chan, then surfaces it through a polished React frontend.
 
+This platform aggregates and analyzes information from both social media streams and verified news sources, enabling users to uncover hidden narratives, track emerging stories, and cross-reference information in real time.
+
 ## What it is
 
 The project is designed to:
@@ -13,8 +15,8 @@ The project is designed to:
 
 ## Tech stack
 
-- Backend: Node.js, Express, MongoDB, Mongoose, JWT authentication
-- Frontend: React, Vite, Tailwind CSS, Axios
+- Backend: Node.js, Express, MongoDB, JWT Authentication
+- Frontend: React, Vite, Tailwind CSS
 - Services: custom scraping adapters for 4chan, Reddit, Mastodon, and news feeds
 - Rate limiting: per-user scrape throttling via `express-rate-limit`
 
@@ -48,7 +50,7 @@ The backend requires `Authorization: Bearer <token>` on protected routes such as
 
 ### Prerequisites
 
-- Node.js (recommended 18+)
+- Node.js
 - npm
 - MongoDB
 - Optional: Unsplash API key for trending image thumbnails
@@ -86,45 +88,7 @@ The backend requires `Authorization: Bearer <token>` on protected routes such as
    ```bash
    npm run dev
    ```
-5. Open the URL shown by Vite, usually `http://localhost:5173`
-
-## Docker Compose
-
-A `docker-compose.yml` file is not included by default, but the project can be containerized with a simple compose setup.
-
-Example `docker-compose.yml`:
-
-```yaml
-version: '3.9'
-services:
-  backend:
-    image: node:20
-    working_dir: /app
-    volumes:
-      - ./conspire_backend:/app
-    command: sh -c "npm install && npm run dev"
-    ports:
-      - '5000:5000'
-    environment:
-      - MONGO_URI=mongodb://mongo:27017/conspire
-      - UNSPLASH_KEY=${UNSPLASH_KEY}
-  frontend:
-    image: node:20
-    working_dir: /app
-    volumes:
-      - ./conspire_frontend:/app
-    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
-    ports:
-      - '5173:5173'
-    environment:
-      - VITE_API_URL=http://localhost:5000
-  mongo:
-    image: mongo:7
-    ports:
-      - '27017:27017'
-```
-
-> Note: this compose example assumes host-based access to the backend from the frontend container. If running both in containers, adjust `VITE_API_URL` to use the backend service hostname.
+5. Open the URL shown by Vite
 
 ## Backend API reference
 
