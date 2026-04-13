@@ -1,0 +1,10 @@
+@import "tailwindcss";
+
+/* Keep your custom body styles below */
+body {
+  background-color: #050505;
+  color: #d1d1d1;
+  font-family:
+    ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Monaco, Consolas,
+    "Courier New", monospace;
+}
