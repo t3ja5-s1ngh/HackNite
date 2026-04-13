@@ -1,9 +1,3 @@
-# Backend Documentation
-
-This document covers the backend server in the Conspire project.
-
-> The backend application code lives in `conspire_backend/`.
-
 ## Overview
 
 The backend is an Express.js API server that connects to MongoDB and exposes authentication, scraping, data collection, and trending endpoints.
@@ -31,17 +25,6 @@ MONGO_URI=mongodb://localhost:27017/conspire
 UNSPLASH_KEY=your_unsplash_api_key
 PORT=5000
 ```
-
-### Important note
-
-The current code uses a hard-coded JWT secret inside `conspire_backend/services/AuthService.js`:
-
-```js
-const SECRET = "demo_secret_key_123";
-```
-
-For production, replace this with a secure runtime secret and update the middleware accordingly.
-
 ## Start commands
 
 From `conspire_backend/`:
@@ -56,13 +39,6 @@ To run in production mode:
 ```bash
 npm run start
 ```
-
-## Database and migrations
-
-There is no database migration tool configured in this repository.
-The MongoDB schema is managed directly through Mongoose models in `conspire_backend/models/`.
-
-If you need to evolve the schema, update the model definitions and handle any field changes manually.
 
 ### Reset or clear the database
 
@@ -142,13 +118,6 @@ The main stored model is `conspire_backend/models/data.js` with fields:
 - `keyword`
 - `scrapedAt`
 - `filter` (`media` or `official`)
-
-## Notes for operators
-
-- Verify `MONGO_URI` before starting the server
-- `UNSPLASH_KEY` is only required for the `/trending` endpoint
-- The JWT secret is currently hard-coded; migrate it to an environment variable for production
-- `DELETE /admin/clear` is destructive and should only be used intentionally
 
 ## Useful file locations
 
