@@ -24,14 +24,6 @@ The **Intelligence Central** dashboard. Users oversee trending threat signals, i
 ### `Results.jsx`
 The **Data Stream Terminal**. Offers granular, real-time terminal read-outs related to specific intelligence endpoints. Operations are presented in an immersive, dynamically typing log format that replicates raw datalinks.
 
-## Deployment (Railway)
-
-This frontend has been engineered for immediate deployment on **Railway**. An Express wrapper (`server.js`) natively acts as a fast, dedicated server for production-built static assets.
-
-1. Connect your repository to a new Railway project.
-2. In Railway's **Variables** tab, set your `VITE_API_URL` to point to a live backend (e.g., `https://your-api.up.railway.app`).
-3. Railway automatically recognizes the layout, building via `npm run build` and serving the SPA properly via the `node server.js` start script.
-
 ## Running Locally
 
 1. Install module dependencies:
