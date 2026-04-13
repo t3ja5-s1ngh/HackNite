@@ -218,8 +218,8 @@ export default function Results() {
                       {/* Removed Thumbnail */}
 
                       <div className="flex justify-end items-start mb-4">
-                        <span className="text-[10px] text-zinc-500 uppercase font-black flex items-center gap-1">
-                          <Activity size={10} /> {item.source}
+                        <span className="text-xs tracking-widest text-zinc-500 uppercase font-black flex items-center gap-1.5">
+                          <Activity size={12} /> {item.source}
                         </span>
                       </div>
 
@@ -293,7 +293,7 @@ export default function Results() {
                       {/* Removed Thumbnail */}
 
                       <div className="flex justify-end items-start mb-4 border-b border-zinc-800 pb-3">
-                        <span className="text-[10px] text-zinc-500 uppercase font-black bg-zinc-900 px-2 py-1">
+                        <span className="text-xs tracking-widest text-zinc-500 uppercase font-black bg-zinc-900 px-3 py-1.5">
                           {item.source}
                         </span>
                       </div>
